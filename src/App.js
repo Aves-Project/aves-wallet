@@ -1,25 +1,17 @@
 import logo from './logo.svg';
 import './App.css';
+import { useState } from 'react';
+// Aves React Wallet
+// Uses web3 to create local wallet and send transactions to https rpc
+// rpc; https://rpc.avescan.io
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
+import Wallet from './Wallet';
+  function App() {
+    return (
+      <div className="App">
+          {Wallet()}
+      </div>
+    );
+  }
+  
 export default App;

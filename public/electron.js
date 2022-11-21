@@ -7,10 +7,14 @@ const isDev = require("electron-is-dev");
 let mainWindow;
 
 function createWindow() {
-mainWindow = new BrowserWindow({ width: 900, height: 680 });
-    mainWindow.loadURL(isDev ? "http://localhost:3000": 
-    `file://${path.join(__dirname, "../build/index.html")}`);
-
+mainWindow = new BrowserWindow({ width: 900, height: 680, icon: path.join(__dirname, 'logo.png') });
+    // disble menu bar and dev tools and maximize window
+    mainWindow.setMenuBarVisibility(false);
+    // disable resize
+    mainWindow.setResizable(false);
+    mainWindow.loadURL(isDev ? "http://localhost:3000": path.join(__dirname, "../build/index.html"));
+    // set icon
+    mainWindow.setIcon(path.join(__dirname, 'logo.png'));
     mainWindow.on("closed", () => (mainWindow = null));
 }
 

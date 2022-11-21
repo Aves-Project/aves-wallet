@@ -3,7 +3,8 @@
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 20vmin;
+  margin: 2vmin;
   pointer-events: none;
 }
 
@@ -13,9 +14,8 @@
   }
 }
 
-.App-header {
+body {
   background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,3 +36,127 @@
     transform: rotate(360deg);
   }
 }
+/* make the wallet pretty */
+
+.red_button {
+  background-color: #f44336; /* Red */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+.orange_button {
+  background-color: #a0a0a0; /* Orange */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px 3px;
+  cursor: pointer;
+}
+
+input {
+  border: none;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  background-color: white;
+}
+
+/* better buttons with shadows and click effects and rounded corners */
+
+button {
+  background-color: rgb(71, 189, 60); /* Green */
+  border: none;
+  color: rgb(255, 255, 255);
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  
+  border-radius: 12px;
+}
+
+button:active {
+  background-color: lightgrey;
+  transform: translateY(4px);
+}
+/* better buttons with shadows and click effects and rounded corners */
+
+/* make the wallet pretty */
+.a {
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+/* navbar */
+.navbar {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  padding: 8px;
+}
+
+ul {
+  list-style-type: none;
+
+}
+
+/* left column */
+.leftcolumn {   
+  float: left;
+  width: 75%;
+}
+
+.address_input {
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 2px 2px;
+  cursor: pointer;
+}
+/* good table css */
+table {
+  border-collapse: collapse;
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+

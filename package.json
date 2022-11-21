@@ -1,13 +1,16 @@
 {
-  "name": "electron-react",
-  "description": "Electron + React",
-  "author": "Mehdi Teymorian",
+  "name": "aves-wallet",
+  "description": "Aves Wallet",
+  "author": "Aves Developers",
   "version": "0.1.0",
   "private": true,
   "main": "public/electron.js",
   "homepage": "./",
   "build": {
-    "appId": "com.electron-react"
+    "appId": "com.electron-react",
+    "win": {
+      "icon": "./public/256.png"
+    }
   },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.2",
@@ -15,16 +18,23 @@
     "@testing-library/user-event": "^13.5.0",
     "concurrently": "^7.0.0",
     "cross-env": "^7.0.3",
+    "crypto-js": "^4.1.1",
     "electron-is-dev": "^2.0.0",
+    "ethers": "^5.7.2",
+    "moment": "^2.29.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-hot-toast": "^2.4.0",
+    "react-qr-code": "^2.0.8",
     "react-scripts": "5.0.0",
+    "react-toastify": "^9.1.1",
     "wait-on": "^6.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "web3": "^1.8.1"
   },
   "devDependencies": {
     "electron": "^17.1.0",
-    "electron-builder": "^22.14.13"
+    "electron-builder": "^22.10.5"
   },
   "scripts": {
     "react-start": "react-scripts start",
@@ -32,7 +42,9 @@
     "react-test": "react-scripts test --env=jsdom",
     "react-eject": "react-scripts eject",
     "electron-build": "electron-builder",
-    "release": "npm run build && electron-builder --linux --win --mac --x64 --ia32 --publish never",
+    "release": "npm run build && electron-builder --linux  --win --x64 --publish never",
+    "release1": "electron-builder   --win --x64 --publish never",
+
     "build": "npm run react-build && npm run electron-build",
     "start": "concurrently \"cross-env BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && electron .\""
   },
