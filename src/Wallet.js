@@ -309,31 +309,17 @@ export default function Wallet() {
               <li>  <button onClick={() => window.open('https://avescan.io/address/' + wallet.address, '_blank')}>View on avescan</button> </li>
               <li>  <ToastContainer /> </li>
             </ul>
-            <div style={{display: 'flex', flexDirection: 'row'}}>
-              <div>
-                <ul>
-   
-
-                  <li><h4><input 
-                  type="text" value={wallet.address} className='address_input' style={{width: '100%'}} 
-                  onClick={() => copyToClipboard(wallet.address)}
-
-                  />
-                  </h4></li>
-                  <li><h4>Balance: {(balance / 1000000000000000000).toFixed(2)} AVS</h4></li>
-                  <li>       <div id='qr_code_right' style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-              <QRCode value={wallet.address} 
-              size={256}
-              fgColor="#000000"
-              bgColor="#ffffff"
-              level="Q"
-              includeMargin={true}
-              />
-            
-            </div></li>
-                </ul>
-              </div>
-              <div>
+            <h4><input type="text" value={wallet.address} className='address_input' style={{width: '70%'}} onClick={() => copyToClipboard(wallet.address)}/></h4>
+            <h3>Balance: {(balance / 1000000000000000000).toFixed(2)} AVS</h3>
+            <div id='qr_code_right' style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                    <QRCode value={wallet.address} 
+                    size={256}
+                    fgColor="#000000"
+                    bgColor="#ffffff"
+                    level="Q"
+                    includeMargin={true}
+                    />
+                </div>
                 <ul>
                   <li>
                     <input type="text" placeholder="to" id="to" />
@@ -345,12 +331,8 @@ export default function Wallet() {
                     <button onClick={() => sendTransaction(document.getElementById('to').value, document.getElementById('amount').value)}>Send</button>
                   </li>
                   <li>
-                  {getTransactions()}
-
                   </li>
                 </ul>
-              </div>
-            </div>
            </div>
         );
     }
