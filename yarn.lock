@@ -1808,6 +1808,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     "fastq" "^1.6.0"
 
+"@picocss/pico@^1.5.6":
+  "integrity" "sha512-9R+OdtMuHijKa7AQKBrng/1Q/Cd3BnEigYJXmOxI10Eka2qGGDa4b0hua8UeYu01BTtAiO70K7CQuHffU4YXGA=="
+  "resolved" "https://registry.npmjs.org/@picocss/pico/-/pico-1.5.6.tgz"
+  "version" "1.5.6"
+
 "@pmmmwh/react-refresh-webpack-plugin@^0.5.3":
   "integrity" "sha512-zZbZeHQDnoTlt2AF+diQT0wsSXpvWiaIOZwBRdltNFhG1+I3ozyaw7U/nBiUwyJ0D+zwdXp0E3bWOl38Ag2BMw=="
   "resolved" "https://registry.npmjs.org/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.5.4.tgz"

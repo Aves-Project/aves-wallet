@@ -1,5 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
+// import pico css
+// npm install @picocss/pico
+import '@picocss/pico';
 import { useState } from 'react';
 // Aves React Wallet
 // Uses web3 to create local wallet and send transactions to https rpc
