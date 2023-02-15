@@ -9,11 +9,18 @@ import { useState } from 'react';
 // rpc; https://rpc.avescan.io
 
 import Wallet from './Wallet';
+
+// sync_status from local node
+// http://localhost:8545
+
   function App() {
     return (
-      <div className="App">
+      <div className="App">   
+          
+            
           {Wallet()}
       </div>
+      
     );
   }
   

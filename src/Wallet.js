@@ -9,9 +9,9 @@ import  { enc } from 'crypto-js';
 import {ToastContainer,toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
-
-// import componentDidMount and componentWillUnmount
 import { useEffect } from 'react';
+import { QrReader } from 'react-qr-reader';
+import Scan from './scan';
 // Import toastify css file
 // export default function Wallet() extends Component {
 // extend it
@@ -21,6 +21,50 @@ export default function Wallet() {
   const [logedIn, setLogedIn] = useState(false);
   const [logedInState, setLogedInState] = useState(0);
   const [createdWallet, setCreatedWallet] = useState(false);
+  const [selected, setSelected] = useState("environment");
+  const [startScan, setStartScan] = useState(false);
+  const [loadingScan, setLoadingScan] = useState(false);
+  const [data, setData] = useState("");
+  const onNewScanResult = (decodedText, decodedResult) => {
+    // handle decoded results here
+    console.log(`decodedText`, decodedText);
+};
+  const handleScan = async (scanData) => {
+    setLoadingScan(true);
+    console.log(`loaded data data`, scanData);
+    if (scanData && scanData !== "") {
+      console.log(`loaded >>>`, scanData);
+      setData(scanData);
+      setStartScan(false);
+      setLoadingScan(false);
+      // setPrecScan(scanData);
+    }
+  };
+  const handleResult = (result) => {
+    console.log(`result`, result);
+    if (result == null) {
+      // ask for camera permission
+      navigator.getWebcam = (navigator.getUserMedia || navigator.webKitGetUserMedia || navigator.moxGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+      if (navigator.mediaDevices.getUserMedia) {
+          navigator.mediaDevices.getUserMedia({  audio: true, video: true })
+          .then(function (stream) {
+                        //Display the video stream in the video object
+           })
+           .catch(function (e) { console.log(e.name + ": " + e.message); });
+      }
+      else {
+      navigator.getWebcam({ audio: true, video: true }, 
+           function (stream) {
+                   //Display the video stream in the video object
+           }, 
+           function () { console.log("Web cam is not accessible."); });
+      }
+    }
+  };
+  const handleError = (err) => {
+    console.error(err);
+  };
+  // ask for camera permission
   // setTx(tx);
   // setCheckedTxs(true);
   const [tx, setTx] = useState(null);
@@ -55,20 +99,30 @@ export default function Wallet() {
     return transactions;
   }
 
-                  
+  // qr code read
+  const [qrCodeRead, setQrCodeRead] = useState(null);         
+  const handleRead = (code) => {
+    setQrCodeRead(code.data);
+  }; 
   // rpc
   const [rpc, setRpc] = useState('https://rpc.avescoin.io');
   const [toggleModalState, setToggleModalState] = useState(false);
   const [toggleModalState2, setToggleModalState2] = useState(false);
+  const [toggleModalState3, setToggleModalState3] = useState(false);
   const toggleModal = () => {
     setToggleModalState(!toggleModalState);
   }
   const toggleModal2 = () => {
     setToggleModalState2(!toggleModalState2);
   }
+  
+  const toggleModal3 = () => {
+    setToggleModalState3(!toggleModalState3);
+    
+  }
 
   //const [rpc, setRpc] = useState('HTTP://127.0.0.1:7545 ');
-  let our_walletVer = "1.0.3";
+  let our_walletVer = "1.0.4";
   let api = "https://api.github.com/repos/Aves-Project/aves-wallet/releases/latest";
   const [updated_ready, setUpdated_ready] = useState(false);
   const [updated_ready_check, setUpdated_ready_check] = useState(false);
@@ -169,7 +223,12 @@ export default function Wallet() {
     document.body.removeChild(dummy);
     toast.success('Copied to clipboard');
   }
-  
+          // check create interval to refresh page
+  const bgCheck = () => {
+      getTransactionsFromApi();
+      getBalance();
+      setLastTimeChecked(Date.now());
+  }
 
 
 
@@ -200,7 +259,7 @@ export default function Wallet() {
         setBalance(parseInt(balanceFromBigNumber, 16));
     }
     const sendTransaction = async (to, amount) => {            
-      
+      toggleModal2();
       notify(null, 'Transaction is sending');
       const privkey = wallet.privateKey;
       var wallet1 = new ethers.Wallet(privkey);
@@ -233,6 +292,7 @@ export default function Wallet() {
       }
    
       getBalance();
+      getTransactionsFromApi();
     }
     const getTransactionsFromApi = async () => {
       const url = 'https://avescan.io/api?module=account&action=txlist&address=' + wallet.address;
@@ -241,6 +301,7 @@ export default function Wallet() {
       console.log(data);
       setTx(data.result);
     }
+
     // background get balance
 
 
@@ -419,26 +480,33 @@ export default function Wallet() {
             </ul>
           </nav>
           <table>
-  
-            {
+          {
+              tx == null ?
+              <tr>
+                <td>
+                  <p>
+                    No transactions found or please try again later.
+                  </p>
+                </td>
+              </tr>
+              :
               tx.map((tx, index) => {
                 let time = new Date(tx.timeStamp * 1000).toLocaleString();
                 // make time like 1 day ago
                 time = moment(time).fromNow();
                 return (
-                  <article>
                   <tr key={index}>
                     <td>{tx.value / 1000000000000000000} AVES</td>
                     <td>
                       { 
                         (wallet.address).toLowerCase() == (tx.from).toLowerCase() ?
-                         <td>
-                          <img src='https://cdn-icons-png.flaticon.com/512/608/608336.png'  alt="logo" height={20} width={20} />
-                        </td>
+                         <p>
+                           sent
+                         </p>
                         :
-                        <td>
-                          <img src='https://cdn-icons-png.flaticon.com/512/9347/9347206.png'  alt="logo" height={20} width={20} />
-                        </td>
+                        <p>
+                          received
+                        </p>
                       }
                     </td>
                     <td>{time}</td>
@@ -448,10 +516,13 @@ export default function Wallet() {
                     </td>
                     
                   </tr>
-                  </article>
                 )
               })
+              
+
             }
+      
+
         
 
     
@@ -464,10 +535,15 @@ export default function Wallet() {
           
           )
       }
+        if (lastTimeChecked == 0) {
+          bgCheck();
+        }
+        if (lastTimeChecked != 0) {
+          if (lastTimeChecked + 10000 < Date.now()) {
+            bgCheck();
+          }
+        }
 
-        // check create interval to refresh page
-        getTransactionsFromApi();
-        getBalance();
         return (
             <div>
 
@@ -484,14 +560,15 @@ export default function Wallet() {
             
               onClick={() => toggleModal()}
               >
-                QRCode
+                                <img className="qrc" src="https://cdn-icons-png.flaticon.com/512/107/107072.png" style={{width: '25px', height: '25px'}}/>
+
             </a></h4>
+            
             {
               toggleModalState ?
               <div>
                 <dialog open>
                   <article>
-                    
                     <header>
                     <a href="#close"
                       aria-label="Close"
@@ -526,7 +603,33 @@ export default function Wallet() {
             <article>
             <input type="text" placeholder="to" id="to" />
             <input type="text" placeholder="amount" id="amount" />
-            <button onClick={() => toggleModal2()}>Send</button>
+            <footer>
+            <button onClick={() => 
+            
+            document.getElementById('amount').value != '' && document.getElementById('to').value != '' ? toggleModal2()
+            :
+            alert('Please fill in all fields')
+          }>Send</button>
+            </footer>
+            </article>
+            <article>
+            <header>
+              Aves Network
+            </header>
+            <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+            <a href="https://avescan.io/" target="_blank">Avescan</a>
+            <a href="https://avescoin.io/" target="_blank">Avescoin.io</a>
+            <a href="https://pool.avescoin.io" target="_blank">Aves official pool</a>
+            <a href="https://discord.gg/a8762THMNe" target="_blank">Aves Discord</a>
+            </div>
+
+ 
+
+
+
+            </article>
+        
+
             {
               toggleModalState2 ?
               <div>
@@ -547,10 +650,26 @@ export default function Wallet() {
               </div>
               :
               <div></div>
-
-
             }
-            </article>
+                      {
+              toggleModalState3 ?
+              <div>
+                          <dialog open>
+                            <article>
+
+                  
+                  
+                  <button 
+                    class = "secondary"
+                    onClick={() => toggleModal3()}>Close</button>
+              
+                  </article>
+
+                </dialog>
+              </div>
+              :
+              <div></div>
+            }
            </div>
         );
     }
