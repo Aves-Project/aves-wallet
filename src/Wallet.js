@@ -11,7 +11,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import { useEffect } from 'react';
 import { QrReader } from 'react-qr-reader';
-import Scan from './scan';
 // Import toastify css file
 // export default function Wallet() extends Component {
 // extend it
@@ -25,6 +24,9 @@ export default function Wallet() {
   const [startScan, setStartScan] = useState(false);
   const [loadingScan, setLoadingScan] = useState(false);
   const [data, setData] = useState("");
+  const [oneTIME, setOneTIME] = useState(false);
+  const [stakeContract, setStakeContract] = useState("0x5abF3a7f1b07088923a2cA375b1A682d9FAaF5E2");
+  const [stakeContractAbi, setStakeContractAbi] = useState([{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"address","name":"_staker_address","type":"address"}],"name":"calculate_reward","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"check_balance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"check_block_number","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"check_reward","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"check_staked","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"percentage_per_10000_blocks","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"stake","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"stakers","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"block_number","type":"uint256"},{"internalType":"address","name":"staker_address","type":"address"},{"internalType":"uint256","name":"reward","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}]);
   const onNewScanResult = (decodedText, decodedResult) => {
     // handle decoded results here
     console.log(`decodedText`, decodedText);
@@ -122,7 +124,7 @@ export default function Wallet() {
   }
 
   //const [rpc, setRpc] = useState('HTTP://127.0.0.1:7545 ');
-  let our_walletVer = "1.0.4";
+  let our_walletVer = "1.0.6";
   let api = "https://api.github.com/repos/Aves-Project/aves-wallet/releases/latest";
   const [updated_ready, setUpdated_ready] = useState(false);
   const [updated_ready_check, setUpdated_ready_check] = useState(false);
@@ -231,7 +233,7 @@ export default function Wallet() {
   }
 
 
-
+  
   const notify = (error, message) => {
     if (error == null) {
        // orange
@@ -294,6 +296,149 @@ export default function Wallet() {
       getBalance();
       getTransactionsFromApi();
     }
+    const [stakeRWD, setStakeRWD] = useState(0);
+    // const getStakeReward = async () => {
+    //   // ethers js
+    //   const provider = new ethers.providers.JsonRpcProvider(rpc);
+    //   const contract = new ethers.Contract(stakeContract, stakeContractAbi, provider);
+    //   try {
+    //     const reward = await contract.check_reward();
+    //     const rewardFromBigNumber = reward._hex;
+
+    //     console.log(reward);
+    //   } catch (e) {
+    //     notify(true, 'You have need to stake first');
+    //     console.log(e);
+    //   }
+
+      
+    // }
+    //https://avescan.io/api/eth-rpc
+    const [blockStaked, setBlockStaked] = useState(0);
+    // curr
+    const [currBlock, setCurrBlock] = useState(0);
+    const getStakeReward = async () => {
+      if (stakeRWD == "pending") {
+        return;
+      }
+      // use avescan api
+      const url = 'https://avescan.io/api?module=account&action=txlist&address=' + wallet.address;
+      // filter only stake contract
+      const txs = await fetch(url);
+      const txsJson = await txs.json();
+      // sort by block
+      txsJson.result.sort((a, b) => (a.blockNumber > b.blockNumber) ? 1 : -1);
+      setStakeRWD(0);
+      for (let i = 0; i < txsJson.result.length; i++) {
+        const tx = txsJson.result[i];
+        if (tx.to.toLowerCase() == stakeContract.toLowerCase()) {
+          console.log(tx.to);
+          const amount = tx.value / 1000000000000000000;
+          // check if withdraw
+          if (tx.input.toLowerCase().includes('0x3ccfd60b')) {
+            // if tx nnot rerted
+            if (tx.isError == '0') {
+              setStakeRWD(0);
+              setBlockStaked(0);
+
+              console.log('withdraw');
+            }
+
+
+            continue;
+            
+          } 
+          if (tx.input.toLowerCase() == "0x3a4b66f1".toLowerCase()) {
+            // stake add to reward
+            setStakeRWD(amount);
+            setBlockStaked(tx.blockNumber);
+          }
+
+          console.log(tx.input, amount);
+        } else {
+          console.log(stakeContract == tx.to);
+        }
+      }
+      
+      // get last block
+      const provider = new ethers.providers.JsonRpcProvider(rpc);
+      const block = await provider.getBlockNumber();
+      setCurrBlock(block);
+
+  
+    }
+    const can_withdraw = async () => {
+      // GET CURRENT BLOCK and compere
+      const provider = new ethers.providers.JsonRpcProvider(rpc);
+      const block = await provider.getBlockNumber();
+      console.log(block);
+      // if reward is 0
+      if (stakeRWD == 0) {
+        return false;
+      }
+      if (block - blockStaked >= 100) {
+        return false;
+      }
+      return false;
+    }
+
+
+
+    const stake = async (amount) => {
+      // ethers js
+      setStakeRWD('pending');
+
+      const privkey = wallet.privateKey;
+      var provider = new ethers.providers.JsonRpcProvider(rpc);
+      var wallet1 = new ethers.Wallet(privkey, provider);
+      var contract = new ethers.Contract(stakeContract, stakeContractAbi, wallet1);
+      try {
+        // payable stake
+        const tx = await contract.stake({value: ethers.utils.parseEther(amount)});
+        notify(false, 'Staked');
+        getBalance();
+        // wait for confirm
+        await tx.wait();
+        setStakeRWD(amount);
+        
+      } catch (e) {
+        notify(true, 'Stake failed');
+        setStakeRWD(0);
+        console.log(e);
+
+      }
+    }
+    const withdraw = async () => {
+      // ethers js
+      const privkey = wallet.privateKey;
+      var provider = new ethers.providers.JsonRpcProvider(rpc);
+      var wallet1 = new ethers.Wallet(privkey, provider);
+      var contract = new ethers.Contract(stakeContract, stakeContractAbi, wallet1);
+      notify(false, 'Withdraw pending');
+
+      try {
+        // payable stake and add more gass
+        const tx = await contract.withdraw({gasLimit: 100000});
+
+        getBalance();
+        tx.wait();
+        switch (tx.status) {
+          case 0:
+            notify(true, 'Withdraw failed');
+            break;
+          case 1:
+            notify(false, 'Withdraw success');
+            break;
+        }
+
+        getStakeReward();
+      } catch (e) {
+        notify(true, 'Withdraw failed');
+        console.log(e);
+      }
+    }
+      
+ 
     const getTransactionsFromApi = async () => {
       const url = 'https://avescan.io/api?module=account&action=txlist&address=' + wallet.address;
       const response = await fetch(url);
@@ -535,6 +680,103 @@ export default function Wallet() {
           
           )
       }
+      if (logedInState == 50) {
+        if (oneTIME == false) {
+          setOneTIME(true);
+          getStakeReward();
+        }
+        return (
+          <div>
+          <nav>
+            <ul>
+              <li>   <button onClick={() => { setLogedInState(0); setCheckedTxs(false);           setOneTIME(false); }}>Back</button> </li>
+              <li>  <ToastContainer /> </li>
+
+              </ul>
+          </nav>
+          <h1>Stake your AVES</h1>
+          Total staked: { stakeRWD } AVES 
+          {
+            stakeRWD == "pending" ?
+            <p></p>
+            :
+            <a onClick={() => getStakeReward()}> reload</a>
+
+
+          }
+          <p>Reward is 1% per 10,000 blocks</p>
+          <table>
+            <tr>
+              <td>
+                <p>
+                Blocks since staked
+                : { currBlock - blockStaked } { currBlock - blockStaked < 10000 ? <p>Cant get reward yet</p> : <p></p> }
+                </p>
+              </td>
+              <td>
+                <p>
+
+                {
+                  // 1% per 10k blocks per stake
+                }
+                Reward: { (currBlock - blockStaked) / 10000 * 0.01 * stakeRWD } AVES
+                </p>
+              </td>
+
+            </tr>
+           
+
+                  
+          </table>
+          <small>You can't withdraw your AVES until you get reward</small>
+          <article>
+            <div>
+
+
+              <input type="text" placeholder="Amount" id="stakeAmount" /> <a onClick={() => ( document.getElementById('stakeAmount').value = (balance - 21000 ) / 1000000000000000000 )  }>Max</a>
+              {
+                stakeRWD == 0 ?
+                <button onClick={() => stake(document.getElementById('stakeAmount').value)}>Stake</button>
+                :
+                <button onClick={() => stake(document.getElementById('stakeAmount').value)} disabled>Staked</button>
+
+              }
+            </div>
+            <div>
+              {/* {
+                stakeRWD == 0 ?
+                <button onClick={() => stake(document.getElementById('stakeAmount').value)}
+                disabled
+                >No reward to withdraw</button>
+                :
+                <button onClick={() => stake()}>Withdraw reward</button>
+
+
+              } */}
+              {
+                // or stake reward is 0
+                (currBlock - blockStaked) < 10000 ?
+                
+                <button onClick={() => withdraw()}
+                disabled
+                >No reward to withdraw</button>
+                :
+                stakeRWD == 0 ?
+                  <button onClick={() => withdraw()} disabled>No reward to withdraw</button>
+                :
+                <button onClick={() => withdraw()}>Withdraw reward</button>
+                
+              }
+              
+                  
+
+
+            </div>
+
+          </article>
+          </div>
+        )
+      }
         if (lastTimeChecked == 0) {
           bgCheck();
         }
@@ -551,6 +793,7 @@ export default function Wallet() {
               <ul>
                 <li>  <button  className='orange_button' onClick={() => setSettings(true)}>Settings</button> </li>
                 <li>  <button onClick={() => setLogedInState(22)}>Transactions</button> </li>
+                <li>  <button onClick={() => setLogedInState(50)}>Stake</button> </li>
 
                 <li>  <ToastContainer /> </li>
               </ul>
