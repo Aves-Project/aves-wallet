@@ -24,6 +24,7 @@ export default function Wallet() {
   const [startScan, setStartScan] = useState(false);
   const [loadingScan, setLoadingScan] = useState(false);
   const [data, setData] = useState("");
+  const [oneTImeAAA, setOneTImeAAA] = useState(false);
   const [oneTIME, setOneTIME] = useState(false);
   const [stakeContract, setStakeContract] = useState("0x5abF3a7f1b07088923a2cA375b1A682d9FAaF5E2");
   const [stakeContractAbi, setStakeContractAbi] = useState([{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"address","name":"_staker_address","type":"address"}],"name":"calculate_reward","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"check_balance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"check_block_number","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"check_reward","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"check_staked","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"percentage_per_10000_blocks","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"stake","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"stakers","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"block_number","type":"uint256"},{"internalType":"address","name":"staker_address","type":"address"},{"internalType":"uint256","name":"reward","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}]);
@@ -106,6 +107,7 @@ export default function Wallet() {
   const handleRead = (code) => {
     setQrCodeRead(code.data);
   }; 
+  const [isWalletCreatedAfter, setIsWalletCreatedAfter] = useState(false);
   // rpc
   const [rpc, setRpc] = useState('https://rpc.avescoin.io');
   const [toggleModalState, setToggleModalState] = useState(false);
@@ -120,8 +122,31 @@ export default function Wallet() {
   
   const toggleModal3 = () => {
     setToggleModalState3(!toggleModalState3);
-    
   }
+
+  const afterWalletCreated = () => {
+    // wallet_create_ local storage
+    localStorage.setItem('wallet_create_', false);
+  }
+  // reset
+  const resetWallet = () => {
+    localStorage.removeItem('wallet_create_');
+  }
+  const isWalletCreated = () => {
+    // wallet_create_ local storage
+    console.log('wallet_create_', localStorage.getItem('wallet_create_'));
+    setIsWalletCreatedAfter(localStorage.getItem('wallet_create_'));
+
+
+  }
+  const setWalletCreated = () => {
+    // wallet_create_ local storage
+    localStorage.setItem('wallet_create_', true);
+    setIsWalletCreatedAfter(true);
+    isWalletCreated() 
+  }
+
+
 
   //const [rpc, setRpc] = useState('HTTP://127.0.0.1:7545 ');
   let our_walletVer = "1.0.6";
@@ -176,16 +201,21 @@ export default function Wallet() {
     const wallet = ethers.Wallet.createRandom();
     encryptWallet(wallet, password);
     setCreatedWallet(true);
+    afterWalletCreated();
   }
+
+
   const importWallet = (privateKey, password) => {
     const wallet = new ethers.Wallet(privateKey);
     encryptWallet(wallet, password);
     setCreatedWallet(true);
+    afterWalletCreated();
 
   }
   const deliteWallet = () => {
     // ask are you sure
     localStorage.removeItem('wallet');
+    resetWallet();
     window.location.reload();
 
     toggleModal();
@@ -338,11 +368,19 @@ export default function Wallet() {
           if (tx.input.toLowerCase().includes('0x3ccfd60b')) {
             // if tx nnot rerted
             if (tx.isError == '0') {
-              setStakeRWD(0);
-              setBlockStaked(0);
+     
 
-              console.log('withdraw');
+              console.log('withdraw', amount);
+              console.log('withdraw', tx );
+            } else {
+              // if 0
+              console.log('withdraw reverted');
+              // set last stake
+              
             }
+            // if "0"
+
+
 
 
             continue;
@@ -352,11 +390,11 @@ export default function Wallet() {
             // stake add to reward
             setStakeRWD(amount);
             setBlockStaked(tx.blockNumber);
+            console.log('stake', amount);
           }
 
-          console.log(tx.input, amount);
+         
         } else {
-          console.log(stakeContract == tx.to);
         }
       }
       
@@ -451,15 +489,29 @@ export default function Wallet() {
 
 
 
-
-
   if (localStorage.getItem('wallet') != null) {
+    // check walelt  version that was specified in package.json
 
     // login
     if (!logedIn) {
-    // check walelt  version that was specified in package.json
-    
 
+      if (oneTImeAAA == false) {
+        isWalletCreated() 
+        setOneTImeAAA(true);
+      }
+      if (isWalletCreatedAfter == false) {
+        return (
+          <div>
+            <img src='https://cdn.discordapp.com/attachments/1014981973263011853/1036978915807338516/aves-logo.png' className="App-logo" alt="logo" height={50} />
+            Congratulations! Your wallet has been created.
+            Please save your private key and password in a safe place.
+            <button className='secondary' onClick={() => setWalletCreated ()}>Continue</button>
+            
+  
+          </div>
+        );
+    }
+  
     
     return (
         <div>
