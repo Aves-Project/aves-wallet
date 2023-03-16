@@ -783,9 +783,6 @@ export default function Wallet() {
           <small>You can't withdraw your AVES until you get reward</small>
           <article>
             <div>
-
-
-              <input type="text" placeholder="Amount" id="stakeAmount" /> <a onClick={() => ( document.getElementById('stakeAmount').value = (balance - 21000 ) / 1000000000000000000 )  }>Max</a>
               {
                 stakeRWD == 0 ?
                 <button onClick={() => stake(document.getElementById('stakeAmount').value)}>Stake</button>
