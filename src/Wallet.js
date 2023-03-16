@@ -372,10 +372,13 @@ export default function Wallet() {
 
               console.log('withdraw', amount);
               console.log('withdraw', tx );
+              // set last stake
+              setStakeRWD(amount);
             } else {
               // if 0
               console.log('withdraw reverted');
               // set last stake
+
               
             }
             // if "0"
@@ -783,6 +786,9 @@ export default function Wallet() {
           <small>You can't withdraw your AVES until you get reward</small>
           <article>
             <div>
+
+
+              <input type="text" placeholder="Amount" id="stakeAmount" /> <a onClick={() => ( document.getElementById('stakeAmount').value = (balance - 10000000000 ) / 1000000000000000000 )  }>Max</a>
               {
                 stakeRWD == 0 ?
                 <button onClick={() => stake(document.getElementById('stakeAmount').value)}>Stake</button>
