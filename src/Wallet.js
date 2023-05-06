@@ -149,7 +149,7 @@ export default function Wallet() {
 
 
   //const [rpc, setRpc] = useState('HTTP://127.0.0.1:7545 ');
-  let our_walletVer = "1.0.6";
+  let our_walletVer = "1.0.7";
   let api = "https://api.github.com/repos/Aves-Project/aves-wallet/releases/latest";
   const [updated_ready, setUpdated_ready] = useState(false);
   const [updated_ready_check, setUpdated_ready_check] = useState(false);
@@ -623,12 +623,18 @@ export default function Wallet() {
                       <li>  <button onClick={() => toggleModal()}>Lock wallet</button> </li>
                       <li>  <button className='red_button'
                       onClick={() => setLogedInState(3)}>Export private key</button> </li>
-                      
+
 
                       <li>  <ToastContainer /> </li>
                       
                     </ul>
                   </nav>
+                  <div className='grid'>
+                    <button 
+                     style={{backgroundColor: 'red'}}
+                    onClick={() => withdraw()}>FORCE WITHDRAW STAKE</button> 
+                      <bold>WARNING: THIS WILL WITHDRAW YOUR REWARD TX WILL FAIL IF YOU DONT HAVE REWARD</bold>
+                  </div>
                     {/* <input type="text" placeholder="rpc" id="rpc" />
                     <button onClick={() => setRpc(document.getElementById('rpc').value)}>Change rpc</button>
                      */}
