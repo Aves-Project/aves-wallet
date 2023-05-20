@@ -149,7 +149,7 @@ export default function Wallet() {
 
 
   //const [rpc, setRpc] = useState('HTTP://127.0.0.1:7545 ');
-  let our_walletVer = "1.0.7";
+  let our_walletVer = "1.0.8";
   let api = "https://api.github.com/repos/Aves-Project/aves-wallet/releases/latest";
   const [updated_ready, setUpdated_ready] = useState(false);
   const [updated_ready_check, setUpdated_ready_check] = useState(false);
@@ -629,12 +629,12 @@ export default function Wallet() {
                       
                     </ul>
                   </nav>
-                  <div className='grid'>
+                  {/* <div className='grid'>
                     <button 
                      style={{backgroundColor: 'red'}}
                     onClick={() => withdraw()}>FORCE WITHDRAW STAKE</button> 
                       <bold>WARNING: THIS WILL WITHDRAW YOUR REWARD TX WILL FAIL IF YOU DONT HAVE REWARD</bold>
-                  </div>
+                  </div> */}
                     {/* <input type="text" placeholder="rpc" id="rpc" />
                     <button onClick={() => setRpc(document.getElementById('rpc').value)}>Change rpc</button>
                      */}
@@ -794,14 +794,8 @@ export default function Wallet() {
             <div>
 
 
-              <input type="text" placeholder="Amount" id="stakeAmount" /> <a onClick={() => ( document.getElementById('stakeAmount').value = (balance - 10000000000 ) / 1000000000000000000 )  }>Max</a>
-              {
-                stakeRWD == 0 ?
-                <button onClick={() => stake(document.getElementById('stakeAmount').value)}>Stake</button>
-                :
-                <button onClick={() => stake(document.getElementById('stakeAmount').value)} disabled>Staked</button>
+              <button onClick={() => stake(document.getElementById('stakeAmount').value)} disabled>Staked Period is over</button>
 
-              }
             </div>
             <div>
               {/* {
@@ -854,7 +848,7 @@ export default function Wallet() {
               <ul>
                 <li>  <button  className='orange_button' onClick={() => setSettings(true)}>Settings</button> </li>
                 <li>  <button onClick={() => setLogedInState(22)}>Transactions</button> </li>
-                <li>  <button onClick={() => setLogedInState(50)}>Stake</button> </li>
+                {/* <li>  <button onClick={() => setLogedInState(50)}>Stake</button> </li> */}
 
                 <li>  <ToastContainer /> </li>
               </ul>
