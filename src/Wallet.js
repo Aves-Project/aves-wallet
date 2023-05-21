@@ -149,7 +149,7 @@ export default function Wallet() {
 
 
   //const [rpc, setRpc] = useState('HTTP://127.0.0.1:7545 ');
-  let our_walletVer = "1.0.8";
+  let our_walletVer = "1.0.9";
   let api = "https://api.github.com/repos/Aves-Project/aves-wallet/releases/latest";
   const [updated_ready, setUpdated_ready] = useState(false);
   const [updated_ready_check, setUpdated_ready_check] = useState(false);
