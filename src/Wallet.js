@@ -26,8 +26,8 @@ export default function Wallet() {
   const [data, setData] = useState("");
   const [oneTImeAAA, setOneTImeAAA] = useState(false);
   const [oneTIME, setOneTIME] = useState(false);
-  const [stakeContract, setStakeContract] = useState("0x5abF3a7f1b07088923a2cA375b1A682d9FAaF5E2");
-  const [stakeContractAbi, setStakeContractAbi] = useState([{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"address","name":"_staker_address","type":"address"}],"name":"calculate_reward","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"check_balance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"check_block_number","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"check_reward","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"check_staked","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"percentage_per_10000_blocks","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"stake","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"stakers","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"block_number","type":"uint256"},{"internalType":"address","name":"staker_address","type":"address"},{"internalType":"uint256","name":"reward","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}]);
+  const [stakeContract, setStakeContract] = useState("0x75fA5fecE2A9783e28856c1A7EA3Af544690ebc8");
+  const [stakeContractAbi, setStakeContractAbi] = useState([{"type":"constructor","inputs":[]},{"type":"function","stateMutability":"view","outputs":[{"type":"uint256","name":"","internalType":"uint256"}],"name":"calculate_reward","inputs":[{"type":"address","name":"_staker_address","internalType":"address"}]},{"type":"function","stateMutability":"view","outputs":[{"type":"uint256","name":"","internalType":"uint256"}],"name":"calculate_reward_test","inputs":[{"type":"uint256","name":"staked_amount","internalType":"uint256"},{"type":"uint256","name":"blocks_since_stake","internalType":"uint256"}]},{"type":"function","stateMutability":"nonpayable","outputs":[],"name":"change_owner","inputs":[{"type":"address","name":"_new_owner","internalType":"address"}]},{"type":"function","stateMutability":"view","outputs":[{"type":"uint256","name":"","internalType":"uint256"}],"name":"check_balance","inputs":[]},{"type":"function","stateMutability":"view","outputs":[{"type":"uint256","name":"","internalType":"uint256"}],"name":"check_block_number","inputs":[]},{"type":"function","stateMutability":"view","outputs":[{"type":"uint256","name":"","internalType":"uint256"}],"name":"check_reward","inputs":[]},{"type":"function","stateMutability":"view","outputs":[{"type":"uint256","name":"","internalType":"uint256"}],"name":"check_staked","inputs":[]},{"type":"function","stateMutability":"view","outputs":[{"type":"uint256","name":"","internalType":"uint256"}],"name":"limit","inputs":[]},{"type":"function","stateMutability":"view","outputs":[{"type":"address","name":"","internalType":"address"}],"name":"owner","inputs":[]},{"type":"function","stateMutability":"view","outputs":[{"type":"uint256","name":"","internalType":"uint256"}],"name":"percentage_per_30000_blocks","inputs":[]},{"type":"function","stateMutability":"nonpayable","outputs":[],"name":"premature_withdraw","inputs":[]},{"type":"function","stateMutability":"payable","outputs":[],"name":"stake","inputs":[]},{"type":"function","stateMutability":"view","outputs":[{"type":"uint256","name":"amount","internalType":"uint256"},{"type":"uint256","name":"block_number","internalType":"uint256"},{"type":"address","name":"staker_address","internalType":"address"},{"type":"uint256","name":"reward","internalType":"uint256"}],"name":"stakers","inputs":[{"type":"address","name":"","internalType":"address"}]},{"type":"function","stateMutability":"nonpayable","outputs":[],"name":"start_staking","inputs":[]},{"type":"function","stateMutability":"view","outputs":[{"type":"bool","name":"","internalType":"bool"}],"name":"stop","inputs":[]},{"type":"function","stateMutability":"nonpayable","outputs":[],"name":"stop_staking","inputs":[]},{"type":"function","stateMutability":"nonpayable","outputs":[],"name":"withdraw","inputs":[]},{"type":"function","stateMutability":"nonpayable","outputs":[],"name":"withdraw_aves","inputs":[{"type":"uint256","name":"_amount","internalType":"uint256"}]},{"type":"receive"}]);
   const onNewScanResult = (decodedText, decodedResult) => {
     // handle decoded results here
     console.log(`decodedText`, decodedText);
@@ -149,7 +149,7 @@ export default function Wallet() {
 
 
   //const [rpc, setRpc] = useState('HTTP://127.0.0.1:7545 ');
-  let our_walletVer = "1.0.9";
+  let our_walletVer = "1.0.10";
   let api = "https://api.github.com/repos/Aves-Project/aves-wallet/releases/latest";
   const [updated_ready, setUpdated_ready] = useState(false);
   const [updated_ready_check, setUpdated_ready_check] = useState(false);
@@ -395,6 +395,24 @@ export default function Wallet() {
             setBlockStaked(tx.blockNumber);
             console.log('stake', amount);
           }
+          // 0x030dbce8
+          if (tx.input.toLowerCase() == "0x030dbce8".toLowerCase()) {
+            // premature withdraw
+            if (tx.isError == '0') {
+     
+
+              console.log('withdraw', amount);
+              console.log('withdraw', tx );
+              // set last stake
+              setStakeRWD(amount);
+            } else {
+              // if 0
+              console.log('withdraw reverted');
+              // set last stake
+
+              
+            }
+          }
 
          
         } else {
@@ -478,7 +496,34 @@ export default function Wallet() {
         console.log(e);
       }
     }
-      
+    const withdraw_without_reward = async () => {
+      // ethers js
+      const privkey = wallet.privateKey;
+      var provider = new ethers.providers.JsonRpcProvider(rpc);
+      var wallet1 = new ethers.Wallet(privkey, provider);
+      var contract = new ethers.Contract(stakeContract, stakeContractAbi, wallet1);
+      notify(false, 'Withdraw pending');
+      try {
+        const tx = await contract.premature_withdraw({gasLimit: 100000});
+        getBalance();
+        tx.wait();
+        switch (tx.status) {
+          case 0:
+            notify(true, 'Withdraw failed');
+            break;
+          case 1:
+            notify(false, 'Withdraw success');
+            break;
+        }
+        getStakeReward();
+
+
+      } catch (e) {
+        notify(true, 'Withdraw failed');
+        console.log(e);
+      }
+
+    }
  
     const getTransactionsFromApi = async () => {
       const url = 'https://avescan.io/api?module=account&action=txlist&address=' + wallet.address;
@@ -765,13 +810,13 @@ export default function Wallet() {
 
 
           }
-          <p>Reward is 1% per 10,000 blocks</p>
+          <p>Reward is 1% per 30,000 blocks</p>
           <table>
             <tr>
               <td>
                 <p>
                 Blocks since staked
-                : { currBlock - blockStaked } { currBlock - blockStaked < 10000 ? <p>Cant get reward yet</p> : <p></p> }
+                : { currBlock - blockStaked } { currBlock - blockStaked < 30000 ? <p>Cant get reward yet</p> : <p></p> }
                 </p>
               </td>
               <td>
@@ -780,7 +825,7 @@ export default function Wallet() {
                 {
                   // 1% per 10k blocks per stake
                 }
-                Reward: { (currBlock - blockStaked) / 10000 * 0.01 * stakeRWD } AVES
+                Reward: { (currBlock - blockStaked) / 30000 * 0.01 * stakeRWD } AVES
                 </p>
               </td>
 
@@ -793,8 +838,8 @@ export default function Wallet() {
           <article>
             <div>
 
-
-              <button onClick={() => stake(document.getElementById('stakeAmount').value)} disabled>Staked Period is over</button>
+              <input type="text" placeholder="MAX 100K" id="stakeAmount" />
+              <button onClick={() => stake(document.getElementById('stakeAmount').value)} >Stake</button>
 
             </div>
             <div>
@@ -810,19 +855,29 @@ export default function Wallet() {
               } */}
               {
                 // or stake reward is 0
-                (currBlock - blockStaked) < 10000 ?
+                (currBlock - blockStaked) < 30000 ?
                 
                 <button onClick={() => withdraw()}
                 disabled
                 >No reward to withdraw</button>
                 :
                 stakeRWD == 0 ?
-                  <button onClick={() => withdraw()} disabled>No reward to withdraw</button>
-                :
+                <div>
+                <button onClick={() => withdraw()} disabled>No reward to withdraw</button>
+                </div>
+                : 
+                <div>
                 <button onClick={() => withdraw()}>Withdraw reward</button>
+
+                </div>
+                
                 
               }
-              
+              <bold>
+                Only if you have staked
+              </bold>
+              <button onClick={() => withdraw_without_reward()}>Withdraw stake without reward</button>
+
                   
 
 
@@ -848,7 +903,7 @@ export default function Wallet() {
               <ul>
                 <li>  <button  className='orange_button' onClick={() => setSettings(true)}>Settings</button> </li>
                 <li>  <button onClick={() => setLogedInState(22)}>Transactions</button> </li>
-                {/* <li>  <button onClick={() => setLogedInState(50)}>Stake</button> </li> */}
+                <li>  <button onClick={() => setLogedInState(50)}>Stake</button> </li>
 
                 <li>  <ToastContainer /> </li>
               </ul>
