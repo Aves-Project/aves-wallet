@@ -33,7 +33,7 @@ function createWindow() {
     if (!tray) {
         createTray()
       }
-mainWindow = new BrowserWindow({ width: 900, height: 680, icon: path.join(__dirname, 'logo.png') });
+mainWindow = new BrowserWindow({ width: 1050, height: 800, icon: path.join(__dirname, 'logo.png') });
     // disble menu bar and dev tools and maximize window
     mainWindow.setMenuBarVisibility(false);
     // disable resize

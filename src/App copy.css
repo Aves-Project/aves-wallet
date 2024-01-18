@@ -1,10 +1,6 @@
-﻿#root {
-  width: 100%;
-}
-
 .App {
-  /* text-align: center; */
-  /* margin: 10px; */
+  text-align: center;
+  margin: 10px;
 }
 
 .App-logo {
@@ -39,7 +35,6 @@ body {
   from {
     transform: rotate(0deg);
   }
-
   to {
     transform: rotate(360deg);
   }
@@ -49,7 +44,6 @@ body {
 
 li {
   float: left;
-  list-style: none !important;
 }
 
 li a {
@@ -59,7 +53,7 @@ li a {
 
 ul {
   list-style-type: none;
-
+  
 }
 
 [data-theme="dark"] {
@@ -75,7 +69,6 @@ ul {
   grid-gap: 10px;
 
 }
-
 .status {
   width: 10px;
   height: 10px;
@@ -83,7 +76,7 @@ ul {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%,-50%);
   background: rgba(127, 185, 0, 1);
 }
 
@@ -96,10 +89,10 @@ ul {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%,-50%);
   text-transform: uppercase;
   letter-spacing: 0.07.2em;
-
+  
   &:before,
   &:after {
     content: '';
@@ -108,17 +101,17 @@ ul {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(127, 185, 0, 0.2);
+    background: rgba(127,185,0, 0.2);
     border-radius: 50px;
     opacity: 0;
   }
-
+  
   &:before {
     transform: scale(1);
     animation: pulse 3s infinite linear;
-
+    
   }
-
+  
   &:after {
     animation: pulse 3s 2s infinite linear;
   }
@@ -129,12 +122,10 @@ ul {
     transform: scale(0.6);
     opacity: 0;
   }
-
   33% {
     transform: scale(1);
     opacity: 1;
   }
-
   100% {
     transform: scale(1.4);
     opacity: 0;
@@ -151,21 +142,18 @@ ul {
   justify-content: center;
   align-items: center;
 }
-
 .modalAttachments {
   display: flex;
   align-items: left;
   justify-content: left;
-  overflow-x: auto;
-  /* Enable horizontal scrollbar when content exceeds the width */
+  overflow-x: auto; /* Enable horizontal scrollbar when content exceeds the width */
   margin: 15 auto;
 
-
+      
   padding: 10px;
   border-radius: 10px;
   max-width: 25rem;
 }
-
 .modalAttachments button {
   margin: 4px
 }
@@ -179,13 +167,10 @@ textarea {
 /* Media query for smaller width on mobile devices */
 @media (max-width: 767px) {
   textarea {
-    width: 100%;
-    /* Adjust the width as needed for your design */
-    max-width: 18rem;
-    /* You can set a maximum width if needed */
+    width: 100%; /* Adjust the width as needed for your design */
+    max-width: 18rem; /* You can set a maximum width if needed */
   }
 }
-
 /* Add this to your CSS stylesheet */
 .input-with-dropdown {
   position: relative;
@@ -199,8 +184,7 @@ textarea {
   border: 1px solid #ccc;
   max-height: 150px;
   overflow-y: auto;
-  width: 100%;
-  /* Adjust the width as needed */
+  width: 100%; /* Adjust the width as needed */
   margin-left: 5px;
   border-radius: 1%;
 }
@@ -213,32 +197,25 @@ textarea {
 .suggestion-item:hover {
   background-color: #f0f0f0;
 }
-
 @media (max-width: 767px) {
   .suggestions-dropdown {
-    position: relative;
-    /* Change to relative for stacking under the input */
+    position: relative; /* Change to relative for stacking under the input */
     top: auto;
     left: auto;
-    width: 100%;
-    /* Full width on smaller screens */
-    border-radius: 0;
-    /* Remove border-radius for a clean look */
+    width: 100%; /* Full width on smaller screens */
+    border-radius: 0; /* Remove border-radius for a clean look */
   }
 }
-
 /* Add this to your CSS stylesheet */
 table {
   width: 60%;
   table-layout: fixed;
   border-collapse: collapse;
-  margin: 0 auto;
-  /* Add this line to center the table */
+  margin: 0 auto; /* Add this line to center the table */
 }
 
 
-th,
-td {
+th, td {
   padding: 8px;
   text-align: left;
 }
@@ -247,14 +224,10 @@ td {
 
 /* Optional: Add responsive styling for small screens */
 @media (max-width: 767px) {
-
-  th,
-  td {
-    font-size: 14px;
-    /* Adjust font size for better readability on small screens */
+  th, td {
+    font-size: 14px; /* Adjust font size for better readability on small screens */
     padding: 6px;
   }
-
   table {
     width: 100%;
     table-layout: fixed;
@@ -262,38 +235,16 @@ td {
   }
 }
 
-@keyframes blink {
-  0% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-.listening-text.blinking {
-  animation: blink 1s infinite;
-}
 
 .attachment-upload {
   padding: 1rem;
   max-height: 150px;
   overflow-y: auto;
-  width: 100%;
-  /* Adjust the width as needed */
+  width: 100%; /* Adjust the width as needed */
   margin-left: 5px;
   border-radius: 1%;
   margin-bottom: 10px;
 }
-
 button {
   color: #000000;
-}
-body {
-  overflow-x: hidden;
 }
